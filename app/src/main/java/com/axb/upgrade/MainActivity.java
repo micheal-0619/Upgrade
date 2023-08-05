@@ -1,14 +1,13 @@
 package com.axb.upgrade;
 
-import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
+import com.axb.upgrade.base.BaseActivity;
+import com.axb.upgrade.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity<ActivityMainBinding> {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    protected void init() {
+        binding.tvHello.setText("Hello Android");
     }
 }
