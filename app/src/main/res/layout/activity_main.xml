@@ -6,14 +6,66 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <RelativeLayout
+        android:id="@+id/rlTopPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/padding_normal"
+            android:src="@drawable/btn_back_selector" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/ivBack"
+            android:text="@string/title_app_name"
+            android:textColor="@color/default_font_color"
+            android:textSize="@dimen/font_size_title"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvNewVersion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="#33000000"
+            android:padding="@dimen/padding_small"
+            android:text="@string/title_new_version_found_long"
+            android:textColor="@color/default_font_color"
+            android:textSize="@dimen/font_size_assistant"
+            android:visibility="gone" />
+    </RelativeLayout>
+
     <TextView
-        android:id="@+id/tvHello"
+        android:id="@+id/tvCheckAppUpdate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:gravity="center"
+        android:text="@string/msg_check_update_hint"
+        android:textColor="@color/default_font_color"
+        android:textSize="@dimen/font_size_content"
+        android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="150dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

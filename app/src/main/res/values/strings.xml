@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">Upgrade</string>
+    <string name="title_app_name">应用更新</string>
+    <string name="title_new_version_found_long"><u>发现新版本，点此进行更新！</u></string>
+    <string name="title_downloading_apk">正在下载 apk</string>
+
     <string name="msg_download_error">下载过程发生错误。</string>
+    <string name="msg_check_update_hint">正在检查更新，请稍后……</string>
+    <string name="msg_already_newest">当前已是最新版本：%s</string>
+    <string name="msg_check_update_failed">检查更新失败：%s</string>
+    <string name="title_new_version_found">发现新版本</string>
+    <string name="title_new_version_found_ex">发现新版本：%s</string>
+    <string name="btn_next_time">下次吧</string>
+    <string name="btn_ok">确定</string>
 </resources>

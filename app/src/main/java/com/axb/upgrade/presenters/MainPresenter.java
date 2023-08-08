@@ -14,6 +14,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.axb.appserverclient.AppServer;
 import com.axb.appserverclient.BuildConfig;
+import com.axb.appserverclient.base.ILogger;
 import com.axb.appserverclient.results.BaseResult;
 import com.axb.appserverclient.utils.DateTimeUtil;
 import com.axb.appserverclient.utils.NetUtil;
@@ -54,18 +55,18 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
             switch (msg.what) {
                 case GCons.MSG_UPGRADE_REQUEST:
                     onMsgUpgradeRequest(
-                            (BaseUpdateInfo)((MessageParamEntity)msg.obj).getObjParam0(),
-                            ((MessageParamEntity)msg.obj).isBoolParam0());
+                            (BaseUpdateInfo) ((MessageParamEntity) msg.obj).getObjParam0(),
+                            ((MessageParamEntity) msg.obj).isBoolParam0());
                     break;
                 case GCons.MSG_UPGRADE_IGNORE:
                     onMsgUpgradeIgnore(
-                            (BaseUpdateInfo)((MessageParamEntity)msg.obj).getObjParam0(),
-                            ((MessageParamEntity)msg.obj).isBoolParam0());
+                            (BaseUpdateInfo) ((MessageParamEntity) msg.obj).getObjParam0(),
+                            ((MessageParamEntity) msg.obj).isBoolParam0());
                     break;
                 case GCons.MSG_UPGRADE_ERROR:
                     onMsgUpgradeError(
-                            ((MessageParamEntity)msg.obj).getStrParam0(),
-                            ((MessageParamEntity)msg.obj).isBoolParam0()
+                            ((MessageParamEntity) msg.obj).getStrParam0(),
+                            ((MessageParamEntity) msg.obj).isBoolParam0()
                     );
                     break;
                 case GCons.MSG_DOWNLOAD_APK_STARTED:
@@ -85,9 +86,36 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
     };
 
     // Constructors
-    public MainPresenter(Context context, AppServer appServer) {
+    public MainPresenter(Context context) {
         super(context);
-        this.appServer = appServer;
+        AppServer.setLogger(new ILogger() {
+            @Override
+            public void v(String s) {
+            }
+
+            @Override
+            public void d(String s) {
+            }
+
+            @Override
+            public void i(String s) {
+            }
+
+            @Override
+            public void w(String s) {
+            }
+
+            @Override
+            public void e(String s) {
+            }
+
+            @Override
+            public void e(Throwable throwable) {
+            }
+        });
+        appServer = new AppServer(context);
+        appServer.setListener(this);
+
         autoUpgradeTool = new AutoUpgradeTool();
     }
 
@@ -113,6 +141,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
                     GCons.REQ_PERMISSIONS);
         }
     }
+
     @Override
     public void permissionGranted(String permission, boolean granted, boolean newRequested) {
         switch (permission) {
@@ -127,34 +156,39 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
                 break;
         }
     }
+
     @Override
     public void handleIntent(boolean newIntent) {
         // TODO 处理 Intent 请求
     }
+
     @Override
     public void checkUpdate() {
         autoUpgradeTool.checkUpdate(GCons.AUTO_UPGRADE_URL, new UpdateInfo(), this, new CheckUpdateEntity(true));
     }
+
     // Override functions for AppServer.OnWebResponseListener
     @Override
     public void onResult(int reqId, BaseResult baseResult) {
         // TODO 处理 AppServer 成功的请求
     }
+
     @Override
     public void onError(int reqId, BaseResult baseResult) {
         // TODO 处理 AppServer 失败的请求
     }
+
     // Override functions for AutoUpgradeTool.OnCheckUpdateListener
     @Override
     public void onCheckSuccess(BaseUpdateInfo baseUpdateInfo, Object userParam) {
-        UpdateInfo updateInfo = (UpdateInfo)baseUpdateInfo;
+        UpdateInfo updateInfo = (UpdateInfo) baseUpdateInfo;
         //Logger.getInstance().i("AutoUpgradeTool.OnCheckUpdateListener onCheckSuccess: " + updateInfo.toString());
         if (BuildConfig.VERSION_CODE < updateInfo.getVersion()) {
             Message msg = new Message();
             msg.what = GCons.MSG_UPGRADE_REQUEST;
             MessageParamEntity paramEntity = new MessageParamEntity();
             paramEntity.setObjParam0(updateInfo);
-            paramEntity.setBoolParam0(((CheckUpdateEntity)userParam).isFromUser());
+            paramEntity.setBoolParam0(((CheckUpdateEntity) userParam).isFromUser());
             msg.obj = paramEntity;
             mHandler.sendMessage(msg);
         } else {
@@ -162,22 +196,24 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
             msg.what = GCons.MSG_UPGRADE_IGNORE;
             MessageParamEntity paramEntity = new MessageParamEntity();
             paramEntity.setObjParam0(updateInfo);
-            paramEntity.setBoolParam0(((CheckUpdateEntity)userParam).isFromUser());
+            paramEntity.setBoolParam0(((CheckUpdateEntity) userParam).isFromUser());
             msg.obj = paramEntity;
             mHandler.sendMessage(msg);
         }
     }
+
     @Override
     public void onCheckFailed(String message, Object userParam) {
-       // Logger.getInstance().e("AutoUpgradeTool.OnCheckUpdateListener onCheckFailed: " + message);
+        // Logger.getInstance().e("AutoUpgradeTool.OnCheckUpdateListener onCheckFailed: " + message);
         Message msg = new Message();
         msg.what = GCons.MSG_UPGRADE_ERROR;
         MessageParamEntity paramEntity = new MessageParamEntity();
         paramEntity.setStrParam0(message);
-        paramEntity.setBoolParam0(((CheckUpdateEntity)userParam).isFromUser());
+        paramEntity.setBoolParam0(((CheckUpdateEntity) userParam).isFromUser());
         msg.obj = paramEntity;
         mHandler.sendMessage(msg);
     }
+
     // Override functions for AutoUpgradeTool.OnPerformUpdateListener
     @Override
     public void onDownloadStart(int maxLen) {
@@ -187,6 +223,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
         msg.arg1 = maxLen;
         mHandler.sendMessage(msg);
     }
+
     @Override
     public void onDownloadProgress(int progress) {
         Message msg = new Message();
@@ -194,11 +231,13 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
         msg.arg1 = progress;
         mHandler.sendMessage(msg);
     }
+
     @Override
     public void onDownloadFinished() {
         //Logger.getInstance().i("AutoUpgradeTool.OnPerformUpdateListener onDownloadFinished()");
         mHandler.sendEmptyMessage(GCons.MSG_DOWNLOAD_APK_FINISHED);
     }
+
     @Override
     public void onDownloadError(String errorMessage) {
         //Logger.getInstance().i("AutoUpgradeTool.OnPerformUpdateListener onDownloadError(" + errorMessage + ")");
@@ -234,11 +273,13 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
             //Logger.getInstance().e("getExternalFilesDir(" + GCons.DIR_ROOT + ") returned NULL!");
         }
     }
+
     private void clearTempDir(File dir) {
         if (dir == null || !dir.exists() || !dir.isDirectory()) return;
 
         new ClearTempDirThread(dir).start();
     }
+
     private void checkAppUpdate() {
         if (!NetUtil.isNetworkConnected(mContext) || checkAppUpdateRecently()) {
             handleIntent(false);
@@ -247,6 +288,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
             autoUpgradeTool.checkUpdate(GCons.AUTO_UPGRADE_URL, new UpdateInfo(), this, new CheckUpdateEntity(false));
         }
     }
+
     private boolean checkAppUpdateRecently() {
         Date lastGotAt = DateTimeUtil.strToDate(
                 MainApplication.getSpUtil().get(
@@ -255,6 +297,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
         Date now = Calendar.getInstance().getTime();
         return (now.getTime() - lastGotAt.getTime()) / 1000 < GCons.MAX_SECONDS_TO_TRUST_LOCAL;
     }
+
     private void onMsgUpgradeRequest(BaseUpdateInfo baseUpdateInfo, boolean fromUser) {
 
         MainApplication.getSpUtil().set(GCons.SP_CHECK_UPDATE_TIME, DateTimeUtil.dateToStr(Calendar.getInstance().getTime()));
@@ -295,6 +338,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
             }
         }
     }
+
     private void onMsgUpgradeIgnore(BaseUpdateInfo baseUpdateInfo, boolean fromUser) {
         MainApplication.getSpUtil().set(GCons.SP_CHECK_UPDATE_TIME, DateTimeUtil.dateToStr(Calendar.getInstance().getTime()));
         if (fromUser) {
@@ -304,6 +348,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
             handleIntent(false);
         }
     }
+
     private void onMsgUpgradeError(String errorMessage, boolean fromUser) {
         if (fromUser) {
             mView.onCheckUpdateFailed(errorMessage);
@@ -344,9 +389,10 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
                 for (File file : files) {
                     if (file.isDirectory()) {
                         deleteDir(file);
-                    };
+                    }
+                    ;
                     if (!file.delete()) {
-                       // Logger.getInstance().e("Failed to delete the file: " + file.getAbsolutePath());
+                        // Logger.getInstance().e("Failed to delete the file: " + file.getAbsolutePath());
                     }
                 }
             }

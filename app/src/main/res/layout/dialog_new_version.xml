@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/new_version_dialog_width"
+    android:layout_height="@dimen/new_version_dialog_height"
+    android:background="@drawable/default_dialog_background">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/default_dialog_title_background"
+        android:padding="@dimen/padding_large"
+        android:textColor="@color/font_color_white"
+        android:textSize="@dimen/dialog_title_font_size"
+        android:textStyle="bold"
+        android:text="@string/title_new_version_found"/>
+
+    <LinearLayout
+        android:id="@+id/id_buttons_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/dialog_buttons_margin_bottom">
+
+        <TextView
+            android:id="@+id/id_cancel_btn"
+            android:layout_width="@dimen/dialog_button_width"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingStart="@dimen/dialog_buttons_padding_horizontal"
+            android:paddingEnd="@dimen/dialog_buttons_padding_horizontal"
+            android:paddingTop="@dimen/dialog_buttons_padding_vertical"
+            android:paddingBottom="@dimen/dialog_buttons_padding_vertical"
+            android:background="@drawable/btn_cancel_selector"
+            android:text="@string/btn_next_time"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/dialog_btn_font_size" />
+
+        <TextView
+            android:id="@+id/id_ok_btn"
+            android:layout_width="@dimen/dialog_button_width"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingStart="@dimen/dialog_buttons_padding_horizontal"
+            android:paddingEnd="@dimen/dialog_buttons_padding_horizontal"
+            android:paddingTop="@dimen/dialog_buttons_padding_vertical"
+            android:paddingBottom="@dimen/dialog_buttons_padding_vertical"
+            android:layout_marginStart="@dimen/dialog_buttons_margin_inner"
+            android:background="@drawable/btn_ok_selector"
+            android:text="@string/btn_ok"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/dialog_btn_font_size" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/id_msg_content_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/dialog_content_padding_horizontal"
+        android:paddingEnd="@dimen/dialog_content_padding_horizontal"
+        android:layout_below="@+id/tvTitle"
+        android:layout_above="@+id/id_buttons_layout"
+        android:layout_centerVertical="true"
+        android:textColor="@color/dialog_content"
+        android:textSize="@dimen/dialog_content_font_size"/>
+</RelativeLayout>

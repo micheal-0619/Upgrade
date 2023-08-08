@@ -2,4 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="default_font_color">#535353</color>
+    <color name="dialog_content">#ff1593d2</color>
+    <color name="font_color_white">#FFFFFF</color>
 </resources>
