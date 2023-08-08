@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Upgrade</string>
+    <string name="msg_download_error">下载过程发生错误。</string>
 </resources>
