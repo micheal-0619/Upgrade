@@ -7,11 +7,10 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-
-import com.axb.appserverclient.BuildConfig;
 import com.axb.upgrade.base.BaseActivity;
 import com.axb.upgrade.base.IBaseAnswer;
 import com.axb.upgrade.contract.MainContract;
@@ -28,6 +27,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainPresente
 
     // Fields
     private ProgressDialog progressDialog;
+    private final static String TAG = "MainPresenter";
 
     @Override
     public void onRequestPermissionsResult(
@@ -115,6 +115,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainPresente
     @Override
     public void onDownloadApkStarted(int maxLen) {
         hideProgressDialog();
+        Log.d(TAG, "onDownloadApkStarted: maxLen = "+maxLen);
         progressDialog = new ProgressDialog(this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setMax(maxLen);

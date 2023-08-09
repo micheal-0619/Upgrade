@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.axb.upgrade",
+  "variantName": "release",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 2,
+      "versionName": "1.0.2.0",
+      "outputFile": "Upgrade_1.0.2.0_release.apk"
+    }
+  ],
+  "elementType": "File"
+}

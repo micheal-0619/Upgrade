@@ -1,7 +1,7 @@
 package com.axb.upgrade.global;
 
 public class GCons {
-   public static final String AUTO_UPGRADE_URL = "https://www.ebookxz.cn:12760/update/favorite-apps/favorite_apps.xml";
+   public static final String AUTO_UPGRADE_URL = "https://www.ebookxz.cn:12760/update/upgrade/upgrade.xml";
    public static final String DB_NAME = "AxbFavoriteApps.db";
    public static final String SP_FILE_NAME = "AxbFavoriteApps.sp";
 

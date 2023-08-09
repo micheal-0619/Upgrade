@@ -7,17 +7,18 @@ import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 
 import com.axb.appserverclient.AppServer;
-import com.axb.appserverclient.BuildConfig;
 import com.axb.appserverclient.base.ILogger;
 import com.axb.appserverclient.results.BaseResult;
 import com.axb.appserverclient.utils.DateTimeUtil;
 import com.axb.appserverclient.utils.NetUtil;
+import com.axb.upgrade.BuildConfig;
 import com.axb.upgrade.MainApplication;
 import com.axb.upgrade.R;
 import com.axb.upgrade.base.BasePresenter;
@@ -44,6 +45,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
         AutoUpgradeTool.OnCheckUpdateListener,
         AutoUpgradeTool.OnPerformUpdateListener {
 
+    private final static String TAG = "MainPresenter";
     // Fields
     private final AutoUpgradeTool autoUpgradeTool;
     private final AppServer appServer;
@@ -51,7 +53,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
         @Override
         public void handleMessage(@NonNull Message msg) {
             if (mView == null) return;
-
+            //Log.d(TAG, "handleMessage: msg.what= " + msg.what);
             switch (msg.what) {
                 case GCons.MSG_UPGRADE_REQUEST:
                     onMsgUpgradeRequest(
@@ -70,6 +72,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
                     );
                     break;
                 case GCons.MSG_DOWNLOAD_APK_STARTED:
+                    //Log.d(TAG, "handleMessage: msg.arg1== " + msg.arg1);
                     mView.onDownloadApkStarted(msg.arg1);
                     break;
                 case GCons.MSG_DOWNLOAD_APK_PROGRESS:
@@ -148,6 +151,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
             case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                 if (granted) {
                     //Logger.initializeLoggingSystem(Objects.requireNonNull(mContext.getExternalFilesDir(null)).getAbsolutePath());
+                    //Log.d(TAG, "permissionGranted: 111111");
                     createAppFolders();
                     checkAppUpdate();
                 }
@@ -183,23 +187,22 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
     public void onCheckSuccess(BaseUpdateInfo baseUpdateInfo, Object userParam) {
         UpdateInfo updateInfo = (UpdateInfo) baseUpdateInfo;
         //Logger.getInstance().i("AutoUpgradeTool.OnCheckUpdateListener onCheckSuccess: " + updateInfo.toString());
+       // Log.d(TAG, "onCheckSuccess: BuildConfig.VERSION_CODE= " + BuildConfig.VERSION_CODE + " updateInfo.getVersion()= " + updateInfo.getVersion());
+        Message msg = new Message();
         if (BuildConfig.VERSION_CODE < updateInfo.getVersion()) {
-            Message msg = new Message();
             msg.what = GCons.MSG_UPGRADE_REQUEST;
             MessageParamEntity paramEntity = new MessageParamEntity();
             paramEntity.setObjParam0(updateInfo);
             paramEntity.setBoolParam0(((CheckUpdateEntity) userParam).isFromUser());
             msg.obj = paramEntity;
-            mHandler.sendMessage(msg);
         } else {
-            Message msg = new Message();
             msg.what = GCons.MSG_UPGRADE_IGNORE;
             MessageParamEntity paramEntity = new MessageParamEntity();
             paramEntity.setObjParam0(updateInfo);
             paramEntity.setBoolParam0(((CheckUpdateEntity) userParam).isFromUser());
             msg.obj = paramEntity;
-            mHandler.sendMessage(msg);
         }
+        mHandler.sendMessage(msg);
     }
 
     @Override
@@ -218,6 +221,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
     @Override
     public void onDownloadStart(int maxLen) {
         //Logger.getInstance().i("AutoUpgradeTool.OnPerformUpdateListener onDownloadStart(" + maxLen + ")");
+        //Log.d(TAG, "onDownloadStart: maxLen= " + maxLen);
         Message msg = new Message();
         msg.what = GCons.MSG_DOWNLOAD_APK_STARTED;
         msg.arg1 = maxLen;
@@ -250,16 +254,19 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
     // Private functions
     private void createAppFolders() {
         File dir = mContext.getExternalFilesDir(GCons.DIR_TEMP);
+        //Log.d(TAG, "createAppFolders: " + dir.getAbsolutePath());
         if (dir != null) {
             if (!dir.exists()) {
                 if (!dir.mkdirs()) {
                     //Logger.getInstance().e("Failed to create the folder: " + dir.getAbsolutePath());
+                    //Log.d(TAG, "createAppFolders: dir.getAbsolutePath()" + dir.getAbsolutePath());
                 }
             } else {
                 clearTempDir(dir);
             }
         } else {
             //Logger.getInstance().e("getExternalFilesDir(" + GCons.DIR_TEMP + ") returned NULL!");
+            //Log.d(TAG, "createAppFolders:   " + "getExternalFilesDir(" + GCons.DIR_TEMP + ") returned NULL!");
         }
 
         dir = mContext.getExternalFilesDir(GCons.DIR_ROOT);
@@ -267,10 +274,12 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
             if (!dir.exists()) {
                 if (!dir.mkdirs()) {
                     //Logger.getInstance().e("Failed to create the folder: " + dir.getAbsolutePath());
+                    //Log.d(TAG, "createAppFolders: " + "Failed to create the folder: " + dir.getAbsolutePath());
                 }
             }
         } else {
             //Logger.getInstance().e("getExternalFilesDir(" + GCons.DIR_ROOT + ") returned NULL!");
+            //Log.d(TAG, "createAppFolders: " + "getExternalFilesDir(" + GCons.DIR_ROOT + ") returned NULL!");
         }
     }
 
@@ -286,6 +295,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements
         } else {
             mView.beforeCheckAppUpdate();
             autoUpgradeTool.checkUpdate(GCons.AUTO_UPGRADE_URL, new UpdateInfo(), this, new CheckUpdateEntity(false));
+            //Log.d(TAG, "checkAppUpdate: GCons.AUTO_UPGRADE_URL== " + GCons.AUTO_UPGRADE_URL);
         }
     }
 
