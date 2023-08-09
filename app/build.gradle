@@ -11,7 +11,7 @@ android {
         minSdk 24
         targetSdk 33
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -29,6 +29,27 @@ android {
 
     buildFeatures {
         viewBinding true
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "Upgrade_${variant.versionName}_${variant.name}.apk"
+        }
+    }
+    //签名文件配置, 使得debug也可以升级到release版本
+    signingConfigs {
+        release {
+            storeFile file("../../Key/lxlkey")
+            storePassword '888888'
+            keyAlias 'key'
+            keyPassword '888888'
+        }
+
+        debug {
+            storeFile file("../../Key/lxlkey")
+            storePassword '888888'
+            keyAlias 'key'
+            keyPassword '888888'
+        }
     }
 }
 
